@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+/>
+
+<title>
+ScreenShare
+</title>
+
+<link
+rel="stylesheet"
+href="style.css"
+/>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+<h1>
+
+ScreenShare
+
+</h1>
+
+
+<button id="host">
+
+Compartir Pantalla
+
+</button>
+
+
+<input
+id="roomInput"
+placeholder="Código sala"
+/>
+
+
+<button id="join">
+
+Entrar como Invitado
+
+</button>
+
+
+
+<div
+id="shareBox"
+style="display:none;"
+>
+
+<p>
+
+Invita con este enlace
+
+</p>
+
+
+<input
+id="roomLink"
+readonly
+/>
+
+
+<button
+id="copyBtn"
+>
+
+Copiar
+
+</button>
+
+</div>
+
+
+
+<video
+id="video"
+autoplay
+playsinline
+controls
+></video>
+
+
+</div>
+
+
+
+<script
+type="module"
+src="app.js"
+></script>
+
+</body>
+
+</html>
