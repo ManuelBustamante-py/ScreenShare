@@ -131,7 +131,8 @@ await new Promise((r)=>setTimeout(r, 300));
 video.srcObject = stream;
 video.autoplay = true;
 video.playsInline = true;
-video.muted = true;
+video.muted = false;
+video.volume = 1;
 
 await esperarVideo();
 await video.play();
@@ -453,7 +454,8 @@ frameRate:{
 ideal:60,
 max:60
 }
-}
+},
+audio:true
 };
 
 const calidadFallback = {
@@ -470,7 +472,8 @@ frameRate:{
 ideal:60,
 max:60
 }
-}
+},
+audio:true
 };
 
 try{
