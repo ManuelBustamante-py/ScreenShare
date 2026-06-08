@@ -1,4 +1,67 @@
 <!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ScreenShare</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app-shell">
+	<header class="topbar">
+		<div class="brand-block">
+	<div class="eyebrow">Plataforma de pantalla compartida</div>
+	<h1>ScreenShare</h1>
+	<p id="roomStatus" class="status-line">Listo</p>
+	</div>
+
+	<div class="controls-card">
+			<div class="field-row">
+				<input id="nameInput" type="text" placeholder="Tu nombre" maxlength="32" />
+				<input id="roomInput" type="text" placeholder="Código sala" maxlength="12" />
+	</div>
+
+	<div class="button-row">
+				<button id="join" class="secondary">Entrar como invitado</button>
+				<button id="host" class="primary">Crear sala</button>
+			</div>
+			<div id="shareBox" class="share-box" style="display:none;">
+				<input id="roomLink" type="text" readonly />
+				<button id="copyBtn" class="secondary">Copiar enlace</button>
+			</div>
+		</div>
+	</header>
+	<main class="workspace">
+		<section class="main-panel">
+			<video id="video" autoplay playsinline controls></video>
+	</section>
+
+	<aside id="sidebar" class="sidebar" style="display:none;">
+			<section class="panel">
+				<div class="panel-head">
+					<h2>Participantes</h2>
+					<span id="participantCount" class="pill">0</span>
+				</div>
+				<div id="participantsList" class="participants-list"></div>
+	</section>
+
+	<section class="panel chat-panel">
+				<div class="panel-head">
+					<h2>Chat</h2>
+					<span class="pill">Sala</span>
+				<div id="chatMessages" class="chat-messages"></div>
+				<form id="chatForm" class="chat-form">
+					<input id="chatInput" type="text" placeholder="Escribe un mensaje" maxlength="300" />
+					<button type="submit" class="primary">Enviar</button>
+				</form>
+			</section>
+		</aside>
+	</main>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
 <html>
 
 <head>
