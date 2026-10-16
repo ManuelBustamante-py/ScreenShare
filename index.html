@@ -10,9 +10,19 @@ name="viewport"
 content="width=device-width, initial-scale=1.0"
 />
 
+<meta
+name="theme-color"
+content="#04111f"
+/>
+
 <title>
 ScreenShare
 </title>
+
+<link
+rel="icon"
+href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖥️</text></svg>"
+/>
 
 <link
 rel="stylesheet"
@@ -21,15 +31,13 @@ href="style.css"
 
 </head>
 
-<body>
+<body data-mode="idle">
 
 <div class="app-shell">
 
 <header class="topbar">
 
-<div class="brand-row">
-
-<div>
+<div class="brand">
 
 <div class="eyebrow">
 PLATAFORMA DE PANTALLA COMPARTIDA
@@ -39,9 +47,15 @@ PLATAFORMA DE PANTALLA COMPARTIDA
 ScreenShare
 </h1>
 
-<div class="room-meta">
+</div>
 
-<span class="live-dot"></span>
+<div class="status-pill">
+
+<span
+id="liveDot"
+class="live-dot"
+data-state="off"
+></span>
 
 <p
 id="roomStatus"
@@ -52,58 +66,109 @@ Listo
 
 </div>
 
-</div>
-
-</div>
+</header>
 
 
-<div class="controls-card">
+<section
+id="lobby"
+class="controls-card"
+>
 
 <div class="controls-grid">
 
+<label class="field">
+<span>Tu nombre</span>
 <input
 id="nameInput"
 type="text"
 maxlength="32"
-placeholder="Tu nombre"
+placeholder="Ej. Manuel"
+autocomplete="nickname"
 />
+</label>
 
+<label class="field">
+<span>Código de sala</span>
 <input
 id="roomInput"
 type="text"
-maxlength="12"
-placeholder="Código sala"
+placeholder="Código o enlace de la sala"
+autocomplete="off"
+autocapitalize="characters"
+spellcheck="false"
 />
-
-<button
-id="host"
-class="primary"
->
-＋ Crear sala
-</button>
+</label>
 
 <button
 id="join"
 class="secondary"
 >
-Entrar
+Entrar a la sala
+</button>
+
+<button
+id="host"
+class="primary"
+>
+＋ Crear sala y transmitir
 </button>
 
 </div>
 
+<div class="lobby-footer">
 
 <div
-id="shareBox"
-class="share-actions"
-style="display:none"
+class="segmented"
+role="group"
+aria-label="Modo de transmisión"
 >
+<button type="button" data-quality="movie">🎬 Película</button>
+<button type="button" data-quality="work">💼 Trabajo</button>
+</div>
+
+<p
+id="lobbyHint"
+class="hint"
+>
+Película prioriza la fluidez (60 fps) y Trabajo la nitidez del texto. Si escribes un código, la sala se reutiliza.
+</p>
+
+</div>
+
+</section>
+
+
+<section
+id="sessionBar"
+class="controls-card session-bar"
+hidden
+>
+
+<div class="session-room">
+
+<span
+id="sessionRole"
+class="session-label"
+>
+Sala
+</span>
+
+<strong
+id="sessionCode"
+class="session-code"
+>
+------
+</strong>
+
+</div>
+
+<div class="session-link">
 
 <input
 id="roomLink"
 readonly
+aria-label="Enlace de la sala"
 />
-
-<div class="share-buttons">
 
 <button
 id="copyBtn"
@@ -121,24 +186,64 @@ class="secondary"
 
 </div>
 
+<div
+id="hostTools"
+class="host-tools"
+hidden
+>
+
+<div
+class="segmented"
+role="group"
+aria-label="Modo de transmisión"
+>
+<button type="button" data-quality="movie">🎬 Película</button>
+<button type="button" data-quality="work">💼 Trabajo</button>
 </div>
+
+<button
+id="switchSourceBtn"
+class="secondary"
+>
+🔁 Cambiar fuente
+</button>
 
 </div>
 
-</header>
+<button
+id="leaveBtn"
+class="danger"
+>
+Salir
+</button>
+
+</section>
 
 
 <main class="workspace">
 
-<section class="main-panel">
+<section
+id="stage"
+class="main-panel"
+>
 
 <div class="video-overlay">
 
-<div class="overlay-chip">
-🟢 En vivo
+<div class="overlay-group">
+
+<div
+id="liveChip"
+class="overlay-chip"
+data-state="off"
+>
+<span class="chip-dot"></span>
+<span id="liveText">Sin señal</span>
 </div>
 
-<div class="overlay-chip">
+<div
+class="overlay-chip"
+title="Personas en la sala"
+>
 👥
 <span id="participantCount">
 0
@@ -147,41 +252,143 @@ class="secondary"
 
 </div>
 
+<div
+id="statsChip"
+class="overlay-chip stats-chip"
+hidden
+></div>
+
+</div>
+
 <video
 id="video"
 autoplay
 playsinline
-controls
 ></video>
 
-</section>
+<div
+id="placeholder"
+class="stage-placeholder"
+>
+<div
+id="placeholderIcon"
+class="placeholder-icon"
+>
+🖥️
+</div>
+<h2 id="placeholderTitle"></h2>
+<p id="placeholderText"></p>
+</div>
 
+<button
+id="unmuteBtn"
+class="primary unmute-btn"
+hidden
+>
+🔇 Toca para activar el sonido
+</button>
+
+<div class="player-bar">
+
+<div
+id="audioControls"
+class="player-group"
+>
+
+<button
+id="muteBtn"
+class="icon-btn"
+title="Silenciar (M)"
+aria-label="Silenciar"
+>
+<svg class="icon-sound" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+<svg class="icon-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6"/><path d="m21 9-5 6"/></svg>
+</button>
+
+<input
+id="volumeRange"
+type="range"
+min="0"
+max="1"
+step="0.05"
+value="1"
+aria-label="Volumen"
+/>
+
+</div>
+
+<div class="player-group">
+
+<button
+id="pipBtn"
+class="icon-btn"
+title="Imagen en imagen"
+aria-label="Imagen en imagen"
+>
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><rect x="12" y="11" width="7" height="6" rx="1"/></svg>
+</button>
+
+<button
+id="cleanBtn"
+class="icon-btn"
+title="Vista limpia, solo video (C)"
+aria-label="Vista limpia"
+aria-pressed="false"
+>
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+</button>
+
+<button
+id="fullscreenBtn"
+class="icon-btn"
+title="Pantalla completa (F)"
+aria-label="Pantalla completa"
+>
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5"/><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M16 21h5v-5"/></svg>
+</button>
+
+</div>
+
+</div>
+
+</section>
 
 
 <aside
 id="sidebar"
 class="sidebar"
-style="display:none"
+hidden
 >
 
-<div class="sidebar-tabs">
+<div
+class="sidebar-tabs"
+role="tablist"
+>
 
 <button
 class="tab active"
 data-tab="chat"
+role="tab"
 >
 💬 Chat
+<span
+id="unreadBadge"
+class="badge"
+hidden
+>
+0
+</span>
 </button>
 
 <button
 class="tab"
 data-tab="participants"
+role="tab"
 >
 👥 Participantes
 </button>
 
 </div>
-
 
 
 <div
@@ -209,6 +416,7 @@ class="chat-form"
 id="chatInput"
 maxlength="300"
 placeholder="Escribe un mensaje..."
+autocomplete="off"
 />
 
 <button
@@ -221,7 +429,6 @@ Enviar
 </form>
 
 </div>
-
 
 
 <div
@@ -249,47 +456,13 @@ Sin participantes
 </div>
 
 
+<div
+id="toast"
+class="toast"
+role="status"
+aria-live="polite"
+></div>
 
-<script>
-
-document
-.querySelectorAll(".tab")
-.forEach(btn=>{
-
-btn.onclick=()=>{
-
-document
-.querySelectorAll(".tab")
-.forEach(x=>
-x.classList.remove("active")
-);
-
-btn.classList.add("active");
-
-document
-.querySelectorAll(".sidebar-view")
-.forEach(v=>
-v.classList.remove("active")
-);
-
-if(
-btn.dataset.tab==="chat"
-){
-
-chatView.classList.add("active");
-
-}
-else{
-
-usersView.classList.add("active");
-
-}
-
-};
-
-});
-
-</script>
 
 <script
 type="module"
